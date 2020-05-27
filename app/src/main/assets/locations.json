@@ -1,6 +1,6 @@
 
   [
-    {"Name":"Mega Image Pacurari"  , "Type": "Market"  ,"Longitude": 47.174585,"Latitude": 27.540766, "WebSite": "https://www.mega-image.ro"},
-    {"Name":"Profi Pacurari"  , "Type": "Market"  ,"Longitude":47.175128  ,"Latitude": 27.541778, "WebSite":"https://www.profi.ro/" },
-    {"Name":"Profi Pacurari"  , "Type": "Market"  ,"Longitude":47.175128  ,"Latitude": 27.541778, "WebSite":"https://www.profi.ro/" }
+    {"Name":"Mega Image Pacurari"  , "Type": "Food"  ,"Longitude": 47.174585,"Latitude": 27.540766, "WebSite": "https://www.mega-image.ro"},
+    {"Name":"Profi Pacurari"  , "Type": "Food"  ,"Longitude":47.175128  ,"Latitude": 27.541778, "WebSite":"https://www.profi.ro/" },
+    {"Name":"Profi Pacurari"  , "Type": "Food"  ,"Longitude":47.175128  ,"Latitude": 27.541778, "WebSite":"https://www.profi.ro/" }
   ]

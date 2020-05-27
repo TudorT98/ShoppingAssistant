@@ -16,7 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions{
+    compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:6.0.1'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.5.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.13.0'
-    implementation ('com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.13.0') {
+    implementation('com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.13.0') {
         transitive = true
     }
 

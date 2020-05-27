@@ -30,20 +30,5 @@
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/LocationButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:enabled="true"
-        android:text="Current Location"
-        mapbox:layout_constraintBottom_toTopOf="@+id/startButton"
-        mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent" />
-
 
 </android.support.constraint.ConstraintLayout>

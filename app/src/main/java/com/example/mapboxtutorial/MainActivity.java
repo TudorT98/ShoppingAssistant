@@ -1,14 +1,19 @@
 package com.example.mapboxtutorial;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineListener;
@@ -56,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MapView mapView;
     private MapboxMap map;
     private Button startButton;
-    private Button currentLocation;
     private PermissionsManager permissionsManager;
     private LocationEngine locationEngine;
     private LocationLayerPlugin locationLayerPlugin;
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker destinationMarker;
     private NavigationMapRoute navigationMapRoute;
     private ArrayList<Locations> definedLocations = new ArrayList<>();
+    private ArrayList<String> usedProducts = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,9 +78,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
         mapView = (MapView) findViewById(R.id.mapView);
         startButton = findViewById(R.id.startButton);
-        currentLocation = findViewById(R.id.LocationButton);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+        usedProducts = (ArrayList<String>) getIntent().getSerializableExtra("types");
 
 
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -89,14 +94,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 NavigationLauncher.startNavigation(MainActivity.this,options);
             }
         });
-       currentLocation.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               enableLocation();
-           }
-       });
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.map_menu:
+                Toast.makeText(this,"Navigation",Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.shop_cart_menu :
+                Toast.makeText(this,"Shopping Cart",Toast.LENGTH_LONG).show();
+                Intent myIntent = new Intent(MainActivity.this, ShoppingList.class);
+                MainActivity.this.startActivity(myIntent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void loadJSONFromAsset(Context context) {
         String json = null;
@@ -189,34 +210,45 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapClick(@NonNull LatLng point) {
-
-        if(destinationMarker != null)
-        {
+        if (destinationMarker != null) {
             map.removeMarker(destinationMarker);
         }
 
         //Icon MarketIcon = findViewById(R.drawable.ic_Market);
 
         loadJSONFromAsset(this);
-        for(int i = 0 ; i < definedLocations.size(); i++) {
+        int counter = 0;
+        for (int i = 0; i < definedLocations.size(); i++) {
+            if (usedProducts.size() == 0) {
+                Toast.makeText(this, "No neaby stores found for your shopping cart", Toast.LENGTH_LONG).show();
+            } else {
+                for (int j = 0; j < usedProducts.size(); j++) {
+                    if (usedProducts.get(j).equals(definedLocations.get(i).getType())) {
+                        map.addMarker(new MarkerOptions()
+                                .position(new LatLng(definedLocations.get(i).getLatitude(), definedLocations.get(i).getLongitude()))
+                                .title(definedLocations.get(i).getName()))
+                                .setSnippet(definedLocations.get(i).getWebsite());
+                        counter++;
 
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(definedLocations.get(i).getLatitude(), definedLocations.get(i).getLongitude()))
-                        .title(definedLocations.get(i).getName()));
-                        //.setIcon(MarketIcon);
+                    }
+                    //.setIcon(MarketIcon);
+                }
+                if (counter == 0) {
+                    Toast.makeText(this, "No neaby stores found for your shopping cart", Toast.LENGTH_LONG).show();
+                }
+            }
         }
 
 
+            destinationMarker = map.addMarker(new MarkerOptions().position(point));
+            destinationPosition = Point.fromLngLat(point.getLongitude(), point.getLatitude());
+            originPosition = Point.fromLngLat(originLocation.getLongitude(), originLocation.getLatitude());
 
+            getRoute(originPosition, destinationPosition);
 
-        destinationMarker = map.addMarker(new MarkerOptions().position(point));
-        destinationPosition = Point.fromLngLat(point.getLongitude(),point.getLatitude());
-        originPosition = Point.fromLngLat(originLocation.getLongitude(),originLocation.getLatitude());
+            startButton.setEnabled(true);
+            startButton.setBackgroundResource(R.color.mapBoxGreen);
 
-        getRoute(originPosition,destinationPosition);
-
-        startButton.setEnabled(true);
-        startButton.setBackgroundResource(R.color.mapBoxGreen);
     }
     private void getRoute(Point origin,Point destination){
         NavigationRoute.builder()
@@ -270,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onExplanationNeeded(List<String> permissionsToExplain) {
-        //present toast or dialog
+
     }
 
     @Override
